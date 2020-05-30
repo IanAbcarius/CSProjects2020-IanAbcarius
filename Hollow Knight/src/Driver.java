@@ -3,12 +3,21 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.Timer;
+import java.awt.event.KeyListener;
+import java.awt.Font;
 
-public class Driver extends JPanel implements ActionListener {
+import java.awt.geom.Point2D;
+import java.util.ArrayList;
+import java.util.Vector;
+import java.awt.image.*;
+import java.awt.geom.AffineTransform;
+
+public class Driver extends JPanel implements ActionListener, KeyListener {
 
 	/* Attributes a.k.a. Instance Variables */
 	int w = 1300, h = 900;
@@ -18,9 +27,7 @@ public class Driver extends JPanel implements ActionListener {
 		super.paintComponent(g);
 		
 		cRoom.updateRoom(g);
-		cRoom.paint(g);
-		
-	
+		cRoom.paint(g);		
 	}// end of paint method - put code above for anything dealing with drawing -
 
 	public void update() {
@@ -37,16 +44,18 @@ public class Driver extends JPanel implements ActionListener {
 
 	public static void main(String[] arg) {
 		Driver d = new Driver();
+		
 	}
 
 	/* Instantiate any attributes here (instance variables */
 	public Driver() {
 
 		JFrame f = new JFrame();
-		f.setTitle("Celeste");
+		f.setTitle("Hollow Knight");
 		f.setSize(w, h);
 		f.setBackground(Color.BLACK);
 		f.setResizable(false);
+		f.addKeyListener(this); //listen for keypresses on this frame
 
 		f.add(this);
 		t = new Timer(17, this);
@@ -56,7 +65,57 @@ public class Driver extends JPanel implements ActionListener {
 		f.setVisible(true);
 
 	}
-
+	
+	
 	Timer t;
+	@Override
+	 public void keyPressed(KeyEvent e) {
+		if (e.getKeyCode() == 87) {
+			if(!cRoom.getPlayer().jump) {
+				cRoom.getPlayer().yV=-50;
+				cRoom.getPlayer().y -= 50;
+				cRoom.getPlayer().jump = true;
+			} else if(!cRoom.getPlayer().jump2) {
+				cRoom.getPlayer().yV=-40;
+				cRoom.getPlayer().y -= 25;
+				cRoom.getPlayer().jump2 = true;
+			}
+		}
+
+		if (e.getKeyCode() == 65) {
+			cRoom.getPlayer().xA=-2;
+		}
+		if (e.getKeyCode() == 83) {
+		}
+
+		if (e.getKeyCode() == 68) {
+			cRoom.getPlayer().xA=2;
+		}
+	}
+	
+	@Override
+	public void keyReleased(KeyEvent e) {
+		if (e.getKeyCode() == 87) {
+			cRoom.getPlayer().yV=0;
+		}
+
+		if (e.getKeyCode() == 65) {
+			cRoom.getPlayer().xV=0;
+			cRoom.getPlayer().xA=0;
+		}
+		if (e.getKeyCode() == 83) {
+		}
+
+		if (e.getKeyCode() == 68) {
+			cRoom.getPlayer().xA=0;
+			cRoom.getPlayer().xV=0;
+		}
+	}
+
+	@Override
+	public void keyTyped(KeyEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }//36 by 52

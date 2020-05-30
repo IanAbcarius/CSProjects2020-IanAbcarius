@@ -16,6 +16,7 @@ public class Room {
 	int h;
 
 	Player p;
+	NPC Hornet;
 	Physics phy;
 
 	public Room(String file, int wi, int hi) {
@@ -48,7 +49,8 @@ public class Room {
 					hs = Double.parseDouble(tokens[5]);
 					vs = Double.parseDouble(tokens[6]);
 
-					p = new Player(px, py, 30, 50, 10);
+					p = new Player(px, py, 30, 50, 10, "knight.png");
+					Hornet = new NPC("hornet.png");
 					phy = new Physics(gravity, hs, vs);
 					grid = new Platform[a][b];
 					continue;
@@ -88,6 +90,7 @@ public class Room {
 			}
 		}
 		p.paint(g);
+		Hornet.paint(g);
 		g.setColor(Color.ORANGE);
 		int a =1;
 		int b =0;
@@ -96,5 +99,8 @@ public class Room {
 
 	public Platform getPlatform(int r, int c) {
 		return grid[r][c];
+	}
+	public Player getPlayer() {
+		return p;
 	}
 }
