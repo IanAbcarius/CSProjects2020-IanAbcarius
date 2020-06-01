@@ -14,7 +14,8 @@ public class Room {
 	String roomfile;
 	int w;
 	int h;
-
+	int ix;
+	int iy;
 	Player p;
 	NPC Hornet;
 	Physics phy;
@@ -29,12 +30,13 @@ public class Room {
 		int b = 0;
 		int px = 0;
 		int py = 0;
+		int ix;
+		int iy;
 		double gravity = 0;
 		double hs = 0;
 		double vs = 0;
 		try {
 			BufferedReader in = new BufferedReader(new FileReader(new File(roomfile)));
-
 			int line = 0;
 			grid = new Platform[0][0];
 			for (String x = in.readLine(); x != null; x = in.readLine()) {
@@ -43,16 +45,19 @@ public class Room {
 					String[] tokens = x.split(" ");
 					a = Integer.parseInt(tokens[0]);
 					b = Integer.parseInt(tokens[1]);
-					px = Integer.parseInt(tokens[2]);
-					py = Integer.parseInt(tokens[3]);
+					ix = Integer.parseInt(tokens[2]);
+					iy = Integer.parseInt(tokens[3]);
+					px = ix;
+					py = iy;
 					gravity = Double.parseDouble(tokens[4]);
 					hs = Double.parseDouble(tokens[5]);
 					vs = Double.parseDouble(tokens[6]);
 
-					p = new Player(px, py, 30, 50, 10, "knight.png");
+					p = new Player(px, py, ix,iy, 30, 50, 10, "knight.png");
 					Hornet = new NPC("hornet.png");
 					phy = new Physics(gravity, hs, vs);
 					grid = new Platform[a][b];
+					
 					continue;
 				}
 
@@ -76,9 +81,12 @@ public class Room {
 		}
 	}
 	
-	public void updateRoom(Graphics g) {
+	public void updateRoom() {
 		p.updateKinematics(phy,grid);
-		p.move(grid,g);
+		p.move(grid);
+		p.deathCheck();
+		
+		
 	}
 	public void paint(Graphics g) {
 		for (int i = 0; i < grid.length; i++) {
@@ -102,5 +110,85 @@ public class Room {
 	}
 	public Player getPlayer() {
 		return p;
+	}
+
+	public Platform[][] getGrid() {
+		return grid;
+	}
+
+	public void setGrid(Platform[][] grid) {
+		this.grid = grid;
+	}
+
+	public BufferedReader getIn() {
+		return in;
+	}
+
+	public void setIn(BufferedReader in) {
+		this.in = in;
+	}
+
+	public String getRoomfile() {
+		return roomfile;
+	}
+
+	public void setRoomfile(String roomfile) {
+		this.roomfile = roomfile;
+	}
+
+	public int getW() {
+		return w;
+	}
+
+	public void setW(int w) {
+		this.w = w;
+	}
+
+	public int getH() {
+		return h;
+	}
+
+	public void setH(int h) {
+		this.h = h;
+	}
+
+	public int getIx() {
+		return ix;
+	}
+
+	public void setIx(int ix) {
+		this.ix = ix;
+	}
+
+	public int getIy() {
+		return iy;
+	}
+
+	public void setIy(int iy) {
+		this.iy = iy;
+	}
+
+	public Player getP() {
+		return p;
+	}
+
+	public void setP(Player p) {
+		this.p = p;
+	}
+
+	public NPC getHornet() {
+		return Hornet;
+	}
+
+	public void setHornet(NPC hornet) {
+		Hornet = hornet;
+	}
+
+	public Physics getPhy() {
+		return phy;
+	}
+
+	public void setPhy(Physics phy) {
+		this.phy = phy;
 	}
 }

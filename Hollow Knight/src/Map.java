@@ -56,6 +56,30 @@ public class Map {
 			System.out.println(layout[cR][cC]);
 			return (new Room(layout[cR][cC], w, h));
 		}
+		public String[][] getLayout() {
+			return layout;
+		}
+		public void setLayout(String[][] layout) {
+			this.layout = layout;
+		}
+		public String getMapfile() {
+			return mapfile;
+		}
+		public void setMapfile(String mapfile) {
+			this.mapfile = mapfile;
+		}
+		public int getcR() {
+			return cR;
+		}
+		public void setcR(int cR) {
+			this.cR = cR;
+		}
+		public int getcC() {
+			return cC;
+		}
+		public void setcC(int cC) {
+			this.cC = cC;
+		}
 		
 	 }
 

@@ -26,12 +26,12 @@ public class Driver extends JPanel implements ActionListener, KeyListener {
 	public void paint(Graphics g) {
 		super.paintComponent(g);
 		
-		cRoom.updateRoom(g);
+		cRoom.updateRoom();
 		cRoom.paint(g);		
 	}// end of paint method - put code above for anything dealing with drawing -
 
 	public void update() {
-		
+		cRoom.updateRoom();
 	}// end of update method - put code above for any updates on variable
 
 	// ==================code above ===========================
@@ -58,7 +58,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener {
 		f.addKeyListener(this); //listen for keypresses on this frame
 
 		f.add(this);
-		t = new Timer(17, this);
+		t = new Timer(20, this);
 		t.start();
 //		t.stop();
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -72,24 +72,24 @@ public class Driver extends JPanel implements ActionListener, KeyListener {
 	 public void keyPressed(KeyEvent e) {
 		if (e.getKeyCode() == 87) {
 			if(!cRoom.getPlayer().jump) {
-				cRoom.getPlayer().yV=-50;
-				cRoom.getPlayer().y -= 50;
+				cRoom.getPlayer().yV=-10;
+				cRoom.getPlayer().y -= 5;
 				cRoom.getPlayer().jump = true;
 			} else if(!cRoom.getPlayer().jump2) {
-				cRoom.getPlayer().yV=-40;
-				cRoom.getPlayer().y -= 25;
+				cRoom.getPlayer().yV=-10;
+				cRoom.getPlayer().y -= 5;
 				cRoom.getPlayer().jump2 = true;
 			}
 		}
 
 		if (e.getKeyCode() == 65) {
-			cRoom.getPlayer().xA=-2;
+			cRoom.getPlayer().xA=-1;
 		}
 		if (e.getKeyCode() == 83) {
 		}
 
 		if (e.getKeyCode() == 68) {
-			cRoom.getPlayer().xA=2;
+			cRoom.getPlayer().xA=1;
 		}
 	}
 	

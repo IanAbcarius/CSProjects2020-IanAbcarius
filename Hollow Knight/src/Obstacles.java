@@ -11,4 +11,9 @@ public class Obstacles extends Platform {
 		this.type = type;
 	}
 
+
+	public int getType() {
+		return type;
+	}
+
 }

@@ -36,4 +36,20 @@ public class Physics {
 		
 		return true;
 	}
+
+	public double gethSlowFactor() {
+		return hSlowFactor;
+	}
+
+	public void sethSlowFactor(double hSlowFactor) {
+		this.hSlowFactor = hSlowFactor;
+	}
+
+	public double getvSlowFactor() {
+		return vSlowFactor;
+	}
+
+	public void setvSlowFactor(double vSlowFactor) {
+		this.vSlowFactor = vSlowFactor;
+	}
 }
