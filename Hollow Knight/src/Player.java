@@ -30,9 +30,11 @@ public class Player {
 	int stamina;
 	boolean isClimbing;
 	boolean isDying;
+	boolean isAttacking;
+	boolean touchWall;
 	Rectangle hB;
 	private Image img; // image of the frog
-	
+
 	public Player(int x, int y, int ix, int iy, int w, int h, int stamina, String fileName) {
 		super();
 		this.x = x;
@@ -40,7 +42,7 @@ public class Player {
 		this.w = w;
 		this.h = h;
 		this.ix = ix;
-		this.iy=iy;
+		this.iy = iy;
 		this.xV = 0;
 		this.yV = 0;
 		this.xA = 0;
@@ -48,105 +50,221 @@ public class Player {
 		this.stamina = stamina;
 		this.isClimbing = false;
 		this.isDying = false;
+		isAttacking = false;
 		tx.scale(1, 1);
-		sH=900;
-		sW=1300;
-		hB = new Rectangle(x,y,h,w);
+		sH = 900;
+		sW = 1300;
+		hB = new Rectangle(x, y, h, w);
 		img = getImage(fileName);
 		jump = true;
 		jump2 = true;
 		deathTime = 0;
 	}
-	
-	public void setCords(){
-		r = 36*y/(sH);
-		c = x/(sW/52);
+
+	public void setCords() {
+		r = 36 * y / (sH);
+		c = x / (sW / 52);
 		tx.setToTranslation(x, y);
 	}
-	
-	public void move(Platform[][] grid){
+
+	public void move(Platform[][] grid) {
 		setCords();
 		xV += xA;
 		yV += yA;
 		inPlatform(grid);
 
-		hB = new Rectangle(x,y,h,w);
-		if(onPlatform(grid)){
+		hB = new Rectangle(x, y, h, w);
+		if (onPlatform(grid)) {
 			yV = 0;
 		}
-		if(xV>10) {
-			xV=10;
+		if (collidedWall(grid)) {
+			jump = false;
+			touchWall = true;
+			jump2 = false;
+			// System.out.println("works");
+		} else {
+			touchWall = false;
 		}
-		if(yV>10) {
-			yV=10;
+		if (collidedWall2(grid)) {
+			jump = false;
+			jump2 = false;
+		}
+		if(underPlatform(grid)) {
+			System.out.println("hi");
+			yV = 0;
+			y+=1;
+		}
+		if (xV > 10) {
+			xV = 10;
+		}
+		if (yV > 10) {
+			yV = 10;
 		}
 		x += xV;
-		y+= yV;
+		y += yV;
 		setCords();
 		inPlatform(grid);
-		if(onPlatform(grid)){
+		if (onPlatform(grid)) {
 			yV = 0;
 		}
 	}
-	
-	public void updateKinematics(Physics p,Platform[][] grid){
-		yA=p.getGravity();
-		if(Math.abs(xV)>12){
-		xV = xV*p.getHSlowFactor();
-		}
-		
-	}
 
-	public boolean onPlatform(Platform[][] grid){
-		boolean g1 =false;
-		boolean g2 =false;
-		for(int i =0; i<4;i++){
-			if(grid[r+i-1][c].isSolid()) {
-			if(grid[r+i-1][c].getY()>=(y+h)) {
+	public void updateKinematics(Physics p, Platform[][] grid) {
+		yA = p.getGravity();
+		if (Math.abs(xV) > 12) {
+			xV = xV * p.getHSlowFactor();
+		}
+
+	}
+	public boolean onPlatform(Platform[][] grid) {
+		boolean g1 = false;
+		boolean g2 = false;
+		for (int i = 0; i < 4; i++) {
+			if (grid[r + i - 1][c].isSolid()) {
+				if (grid[r + i - 1][c].getY() >= (y + h)) {
 //				y=grid[r+i][c].getY()-h;
 //				tx.setToTranslation(x, y);
-				if(grid[r+i-1][c].getType()==2) {
+					if (grid[r + i - 1][c].getType() == 2) {
+						isDying = true;
+						deathTime = (int) System.currentTimeMillis();
+					}
+					g1 = true;
+					continue;
+				}
+			}
+		}
+		for (int i = 0; i < 4; i++) {
+			if (grid[r + i - 1][c + 1].isSolid()) {
+				if (grid[r + i - 1][c + 1].getY() >= (y + h)) {
+//				y=grid[r+i][c+1].getY()-h;
+//				tx.setToTranslation(x, y);
+					if (grid[r + i - 1][c].getType() == 2) {
+						isDying = true;
+						System.out.println("yer");
+					}
+					g2 = true;
+					continue;
+				}
+			}
+		}
+		if (g1 || g2) {
+			jump = false;
+			jump2 = false;
+//			System.out.println("on platform");
+			// System.out.println(isDying);
+			return true;
+		}
+		return false;
+	}
+
+	public boolean underPlatform(Platform[][] grid) {
+		boolean g1 = false;
+		boolean g2 = false;
+		if (grid[r][c].isSolid()) {
+			if (grid[r][c].getY() <= (y + h)) {
+//				y=grid[r+i][c].getY()-h;
+//				tx.setToTranslation(x, y);
+				if (grid[r][c].getType() == 2) {
 					isDying = true;
 					deathTime = (int) System.currentTimeMillis();
 				}
 				g1 = true;
-				continue;
-			}	
 			}
-			}
-		for(int i =0; i<4;i++){
-			if(grid[r+i-1][c+1].isSolid()) {
-			if(grid[r+i-1][c+1].getY()>=(y+h)) {
+		}
+		if (grid[r][c + 1].isSolid()) {
+			if (grid[r][c + 1].getY() <= (y + h)) {
 //				y=grid[r+i][c+1].getY()-h;
 //				tx.setToTranslation(x, y);
-				if(grid[r+i-1][c].getType()==2) {
+				if (grid[r][c+1].getType() == 2) {
 					isDying = true;
 					System.out.println("yer");
 				}
 				g2 = true;
-				continue;
-			}}}
-		if(g1||g2) {
-			jump = false;
-			jump2 = false;
+			}
+		}
+		if (g1 || g2) {
 //			System.out.println("on platform");
-			System.out.println(isDying);
+			// System.out.println(isDying);
 			return true;
 		}
-		
-		
-		
 		return false;
-	}		
+	}
+
 	private void inPlatform(Platform[][] grid) {
-		if(grid[r+1][c].isSolid||grid[r][c].isSolid||grid[r+1][c+1].isSolid||grid[r][c+1].isSolid) {
-			yV=0;
-			y-=26;
+		if (grid[r + 1][c].isSolid || grid[r + 1][c + 1].isSolid) {
+			yV = 0;
+			y -= 26;
 			setCords();
 			inPlatform(grid);
 		}
-			
+
 	}
+
+	public boolean collidedWall(Platform[][] grid) {
+		Rectangle p = new Rectangle(x + w + 30, y + 10, 20, h - 10);
+		for (int i = 0; i < 2; i++) {
+			/*
+			 * if(grid[r+i][c+3].isSolid()) { //System.out.println("hi"); Rectangle z = new
+			 * Rectangle(grid[r+i][c+3].getX(), grid[r+i][c+3].getY(),
+			 * grid[r+i][c+3].getW(), grid[r+i][c+3].getH()); if(p.intersects(z)) {
+			 * x=grid[r+i][c+3].getX()-w; return true; } }
+			 */
+
+			if (grid[r + i][c + 2].isSolid()) {
+				if (grid[r + i][c + 2].getX() >= (x + w) && grid[r + i][c + 2].getY() <= (y + h)
+						&& grid[r + i][c + 2].getY() >= (y)) {
+					// x=grid[r+i][c+3].getX()-w;
+					xV = 0;
+					// x -= 1;
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	public boolean collidedWall2(Platform[][] grid) {
+		// Rectangle p = new Rectangle(x+w+30, y+10, 20 ,h-10);
+		for (int i = 0; i < 2; i++) {
+			/*
+			 * if(grid[r+i][c+3].isSolid()) { //System.out.println("hi"); Rectangle z = new
+			 * Rectangle(grid[r+i][c+3].getX(), grid[r+i][c+3].getY(),
+			 * grid[r+i][c+3].getW(), grid[r+i][c+3].getH()); if(p.intersects(z)) {
+			 * x=grid[r+i][c+3].getX()-w; return true; } }
+			 */
+			if (c > 0) {
+				if (grid[r + i][c - 1].isSolid()) {
+					if (grid[r + i][c - 1].getX() <= (x - 30) && grid[r + i][c - 1].getY() <= (y + h)
+							&& grid[r + i][c - 1].getY() >= (y)) {
+						// x=grid[r+i][c+3].getX()-w;
+						xV = 0;
+						x += 1;
+						return true;
+					}
+				}
+			}
+
+		}
+		return false;
+	}
+
+	public boolean collidedNPC(NPC n, Graphics g) {
+		Rectangle p = new Rectangle(x, y, w, h);
+		Rectangle N = new Rectangle(n.getX(), n.getY(), n.getHeight(), n.getWidth());
+		if (p.intersects(N)) {
+			return true;
+		}
+		return false;
+	}
+	public boolean checkAttack(Enemy e) {
+		Rectangle a = new Rectangle(x+w, y+5, 40, h-15); // USE THIS TO CHANGE ATTACK HITBOX
+		Rectangle E = new Rectangle(e.getX(), e.getY(), e.getHeight(), e.getWidth());
+		if (a.intersects(E)) {
+			return true;
+		}
+		return false;
+	}
+
 	private Image getImage(String path) {
 		Image tempImage = null;
 		try {
@@ -157,25 +275,24 @@ public class Player {
 		}
 		return tempImage;
 	}
-	
-	
+
 	public void deathCheck() {
-		if(isDying&&System.currentTimeMillis()-deathTime>2000) {
+		if (isDying && System.currentTimeMillis() - deathTime > 2000) {
 			x = ix;
 			y = iy;
 			isDying = false;
 			setCords();
 		}
 	}
-	
-	
+
 	public void paint(Graphics g) {
-		hB = new Rectangle(x,y,h,w);
 		g.setColor(Color.green);
-		g.fillRect(x, y, w, h);
+		g.fillRect(x, y, w, h); // player hitbox (visual)
+		g.setColor(Color.yellow);
+		g.fillRect(x+w, y+5, 40, h-15); //attacking hitbox (visual)
 		Graphics2D g2 = (Graphics2D) g;
 		g2.drawImage(img, tx, null);
-		
+
 	}
 
 	public int getX() {
@@ -345,6 +462,5 @@ public class Player {
 	public void setImg(Image img) {
 		this.img = img;
 	}
-	
 
 }

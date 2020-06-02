@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.io.BufferedReader;
@@ -18,6 +19,7 @@ public class Room {
 	int iy;
 	Player p;
 	NPC Hornet;
+	Enemy aspid;
 	Physics phy;
 
 	public Room(String file, int wi, int hi) {
@@ -55,6 +57,8 @@ public class Room {
 
 					p = new Player(px, py, ix,iy, 30, 50, 10, "knight.png");
 					Hornet = new NPC("hornet.png");
+					aspid = new Enemy(500, 400, "aspid.png"); // x, y, image are parameters
+					
 					phy = new Physics(gravity, hs, vs);
 					grid = new Platform[a][b];
 					
@@ -99,6 +103,17 @@ public class Room {
 		}
 		p.paint(g);
 		Hornet.paint(g);
+		aspid.paint(g);
+		if(p.collidedNPC(Hornet, g)) { // if hornet and player intersect
+			Font myFont = new Font("Serif", Font.BOLD, 25);
+			g.setFont(myFont);
+			g.setColor(Color.black);
+			g.drawString("arrow keys to move, z to jump (can double jump)", 400, 100);
+		}
+		if(p.checkAttack(aspid) && p.isAttacking) {
+			aspid.alive = false; //aspid not painting if alive is false
+		}
+		aspid.checkPlayer(p);
 		g.setColor(Color.ORANGE);
 		int a =1;
 		int b =0;

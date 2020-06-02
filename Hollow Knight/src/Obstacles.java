@@ -1,3 +1,6 @@
+import java.awt.Color;
+import java.awt.Graphics;
+
 public class Obstacles extends Platform {
 	private int type;
 
@@ -11,7 +14,16 @@ public class Obstacles extends Platform {
 		this.type = type;
 	}
 
-
+	public void paint(Graphics g){
+		if(type == 2) {
+			g.setColor(Color.green);
+		} else {
+			g.setColor(Color.black);
+		}
+		if(isSolid) {
+			g.fillRect(x, y, w, h);
+		}
+	}
 	public int getType() {
 		return type;
 	}

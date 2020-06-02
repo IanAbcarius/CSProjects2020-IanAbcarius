@@ -70,43 +70,47 @@ public class Driver extends JPanel implements ActionListener, KeyListener {
 	Timer t;
 	@Override
 	 public void keyPressed(KeyEvent e) {
-		if (e.getKeyCode() == 87) {
+		if (e.getKeyCode() == 90) {
 			if(!cRoom.getPlayer().jump) {
-				cRoom.getPlayer().yV=-10;
-				cRoom.getPlayer().y -= 5;
+				cRoom.getPlayer().yV=-7;
+				cRoom.getPlayer().y -= 8;
 				cRoom.getPlayer().jump = true;
 			} else if(!cRoom.getPlayer().jump2) {
-				cRoom.getPlayer().yV=-10;
-				cRoom.getPlayer().y -= 5;
+				cRoom.getPlayer().yV=-5;
+				cRoom.getPlayer().y -= 2;
 				cRoom.getPlayer().jump2 = true;
 			}
 		}
 
-		if (e.getKeyCode() == 65) {
-			cRoom.getPlayer().xA=-1;
+		if (e.getKeyCode() == 37) {
+				cRoom.getPlayer().xV=-5;
 		}
 		if (e.getKeyCode() == 83) {
 		}
-
-		if (e.getKeyCode() == 68) {
-			cRoom.getPlayer().xA=1;
+		if (e.getKeyCode() == 88) {
+			cRoom.getPlayer().isAttacking = true;
+		}
+		if (e.getKeyCode() == 39) {
+				cRoom.getPlayer().xV=5;
 		}
 	}
 	
 	@Override
 	public void keyReleased(KeyEvent e) {
-		if (e.getKeyCode() == 87) {
+		if (e.getKeyCode() == 90) {
 			cRoom.getPlayer().yV=0;
 		}
-
-		if (e.getKeyCode() == 65) {
+		if (e.getKeyCode() == 88) {
+			cRoom.getPlayer().isAttacking = false;
+		}
+		if (e.getKeyCode() == 37) {
 			cRoom.getPlayer().xV=0;
 			cRoom.getPlayer().xA=0;
 		}
 		if (e.getKeyCode() == 83) {
 		}
 
-		if (e.getKeyCode() == 68) {
+		if (e.getKeyCode() == 39) {
 			cRoom.getPlayer().xA=0;
 			cRoom.getPlayer().xV=0;
 		}

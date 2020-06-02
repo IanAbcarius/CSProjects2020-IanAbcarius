@@ -7,37 +7,59 @@ import java.awt.geom.AffineTransform;
 import java.net.URL;
 
 
-public class NPC {
+public class Enemy {
 	private int width; 
 	private int height;
 	private int x;
 	private int y;
+	boolean alive;
 	private AffineTransform tx = AffineTransform.getTranslateInstance(x, y);
-	public NPC(String fileName) {
+	EProjectile projectiles;
+	public Enemy(int xI, int yI, String fileName) {
 		// assignment statements for attributes
-
-		x = 50;
-		y = 650;
+		alive = true;
+		x = xI;
+		y = yI;
 		width = 50;
 		height = 50;
 		tx.setToTranslation(x, y);
+		loadProjectiles();
 		img = getImage(fileName);
+	}
+	public void loadProjectiles() {
+		projectiles = new EProjectile("aspid.png", x, y);
+		projectiles.active = true;
 	}
 	private Image img; 
 	public void paint(Graphics g) {
-		Graphics2D g2 = (Graphics2D) g;
-		g2.drawImage(img, tx, null);
-		
+		if(alive) {
+			Graphics2D g2 = (Graphics2D) g;
+			g2.drawImage(img, tx, null);
+		}
+		if(projectiles.active) {
+			projectiles.paint(g);
+		}
 	}
 	private Image getImage(String path) {
 		Image tempImage = null;
 		try {
-			URL imageURL = NPC.class.getResource(path);
+			URL imageURL = Enemy.class.getResource(path);
 			tempImage = Toolkit.getDefaultToolkit().getImage(imageURL);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return tempImage;
+	}
+	
+	public void checkPlayer(Player p) {
+		if(projectiles.active) {
+			projectiles.runCollisionE(p);
+		}
+	}
+	public void reload() {
+		projectiles.setX(x);
+		projectiles.setY(y);
+		projectiles.active = true;
 	}
 	public int getWidth() {
 		return width;
