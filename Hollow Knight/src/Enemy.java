@@ -5,6 +5,7 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.geom.AffineTransform;
 import java.net.URL;
+import java.util.concurrent.TimeUnit;
 
 
 public class Enemy {
@@ -14,8 +15,9 @@ public class Enemy {
 	private int y;
 	boolean alive;
 	private AffineTransform tx = AffineTransform.getTranslateInstance(x, y);
+	int startTime;
 	EProjectile projectiles;
-	public Enemy(int xI, int yI, String fileName) {
+	public Enemy(int xI, int yI, String fileName, Player p) {
 		// assignment statements for attributes
 		alive = true;
 		x = xI;
@@ -23,21 +25,24 @@ public class Enemy {
 		width = 50;
 		height = 50;
 		tx.setToTranslation(x, y);
-		loadProjectiles();
+		loadProjectiles(p);
 		img = getImage(fileName);
 	}
-	public void loadProjectiles() {
+	public void loadProjectiles(Player p) {
 		projectiles = new EProjectile("aspid.png", x, y);
 		projectiles.active = true;
+		projectiles.aim(p);
 	}
 	private Image img; 
-	public void paint(Graphics g) {
+	public void paint(Graphics g, Player p) {
 		if(alive) {
 			Graphics2D g2 = (Graphics2D) g;
 			g2.drawImage(img, tx, null);
 		}
 		if(projectiles.active) {
 			projectiles.paint(g);
+		} else if(alive) {
+			reload(p);
 		}
 	}
 	private Image getImage(String path) {
@@ -56,10 +61,15 @@ public class Enemy {
 			projectiles.runCollisionE(p);
 		}
 	}
-	public void reload() {
+	public void checkPlatforms(Platform[][] grid) {
+		if(projectiles.active) {
+			projectiles.collidedPlatform(grid);
+		}
+	}
+	public void reload(Player p) {
 		projectiles.setX(x);
 		projectiles.setY(y);
-		projectiles.active = true;
+		projectiles.aim(p);
 	}
 	public int getWidth() {
 		return width;

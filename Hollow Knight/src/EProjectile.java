@@ -9,23 +9,29 @@ import java.net.URL;
 /* class to represent a Ship object in a game */
 public class EProjectile {
 
-	private int x, y; 		
+	private int x, y;
 	public boolean active;
 	private int width, height;
-	private Image img; 		
-	private double vx, vy; 	
+	private int r;
+	private int c;
+	private long startTime;
+	private Image img;
+	private int sH, sW;
+	private double vx, vy;
 	private AffineTransform tx = AffineTransform.getTranslateInstance(x, y);
 
-	//constructor
+	// constructor
 	public EProjectile(String fileName, int xI, int yI) {
 		x = xI;
 		y = yI;
+		sH = 900;
+		sW = 1300;
 		vx = 0;
 		vy = 0;
-		width = 172;
-		height = 78;
-		
-		//do not touch
+		width = 25;
+		height = 25;
+
+		// do not touch
 		img = getImage(fileName);
 		update();
 	}
@@ -39,22 +45,37 @@ public class EProjectile {
 		this.vy = vy;
 		update();
 	}
-	
 
 	// draw the affinetransform
 	public void paint(Graphics g) {
 		g.fillRect(x, y, 25, 25);
 		Graphics2D g2 = (Graphics2D) g;
-		//g.fillRect(x+2, y, 20, 22);
+		// g.fillRect(x+2, y, 20, 22);
 		g2.drawImage(img, tx, null);
 		update();
+	}
+
+	public void aim(Player p) {
+		if (System.currentTimeMillis() - startTime >= 1000) {
+			active = true;
+			System.out.println(startTime);
+			System.currentTimeMillis();
+			double deltaX = p.x - x;
+			double deltaY = p.y - y;
+			double direction = Math.atan2(deltaY, deltaX);
+			vx = (5 * Math.cos(direction));
+			vy = (5 * Math.sin(direction));
+		}
 	}
 
 	private void update() {
 		x += (int) vx;
 		y += (int) vy;
+		r = 36 * y / (sH);
+		c = x / (sW / 52);
 		tx.setToTranslation(x, y);
-		if(x>1300 || x<0 || y<0 || y>900) {
+		if (x > 1300 || x < 0 || y < 0 || y > 900) {
+			startTime = System.currentTimeMillis();
 			active = false;
 		}
 	}
@@ -74,12 +95,22 @@ public class EProjectile {
 	public int getX() {
 		return x;
 	}
+
 	public int getY() {
 		return y;
 	}
+
 	public void setX(int x) {
 		this.x = x;
 		update();
+	}
+
+	public void collidedPlatform(Platform[][] grid) {
+		if (grid[r + 1][c].isSolid || grid[r + 1][c + 1].isSolid || grid[r][c].isSolid || grid[r][c + 1].isSolid) {
+			startTime = System.currentTimeMillis();
+			active = false;
+			System.out.println("hit");
+		}
 	}
 
 	public void setY(int y) {
@@ -94,20 +125,18 @@ public class EProjectile {
 	public double getVy() {
 		return vy;
 	}
-	
+
 	public boolean checkCollisionE(Player p) {
-		Rectangle projectile = new Rectangle(x+2, y, 20, 22);
-		Rectangle player = new Rectangle(p.getX(), p.getY(), p.getW(),p.getH());
+		Rectangle projectile = new Rectangle(x + 2, y, 20, 22);
+		Rectangle player = new Rectangle(p.getX(), p.getY(), p.getW(), p.getH());
 		return projectile.intersects(player);
 	}
+
 	public void runCollisionE(Player p) {
-		double deltaX = p.x - x;
-		double deltaY = p.y - y;
-		double direction = Math.atan(deltaY / deltaX);
-		vx = -(5 * Math.cos(direction));
-	    vy = -(5* Math.sin(direction));
-		if(checkCollisionE(p)) {
-			//p.setLives(p.getLives()-1);
+		if (checkCollisionE(p)) {
+			p.isDying = true;
+			// p.setLives(p.getLives()-1);
+			startTime = System.currentTimeMillis();
 			active = false;
 		}
 	}

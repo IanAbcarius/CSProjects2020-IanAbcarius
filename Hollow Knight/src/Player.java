@@ -26,8 +26,8 @@ public class Player {
 	private AffineTransform tx = AffineTransform.getTranslateInstance(x, y);
 	boolean jump;
 	boolean jump2;
+	boolean attR, attL, attU, attD;
 	int deathTime;
-	int stamina;
 	boolean isClimbing;
 	boolean isDying;
 	boolean isAttacking;
@@ -35,7 +35,7 @@ public class Player {
 	Rectangle hB;
 	private Image img; // image of the frog
 
-	public Player(int x, int y, int ix, int iy, int w, int h, int stamina, String fileName) {
+	public Player(int x, int y, int ix, int iy, int w, int h, String fileName) {
 		super();
 		this.x = x;
 		this.y = y;
@@ -47,7 +47,6 @@ public class Player {
 		this.yV = 0;
 		this.xA = 0;
 		this.yA = 0;
-		this.stamina = stamina;
 		this.isClimbing = false;
 		this.isDying = false;
 		isAttacking = false;
@@ -90,12 +89,14 @@ public class Player {
 			jump2 = false;
 		}
 		if(underPlatform(grid)) {
-			System.out.println("hi");
 			yV = 0;
 			y+=1;
 		}
-		if (xV > 10) {
-			xV = 10;
+		if (xV > 5) {
+			xV = 5;
+		}
+		if (xV < -5) {
+			xV = -5;
 		}
 		if (yV > 10) {
 			yV = 10;
@@ -114,7 +115,6 @@ public class Player {
 		if (Math.abs(xV) > 12) {
 			xV = xV * p.getHSlowFactor();
 		}
-
 	}
 	public boolean onPlatform(Platform[][] grid) {
 		boolean g1 = false;
@@ -214,8 +214,8 @@ public class Player {
 				if (grid[r + i][c + 2].getX() >= (x + w) && grid[r + i][c + 2].getY() <= (y + h)
 						&& grid[r + i][c + 2].getY() >= (y)) {
 					// x=grid[r+i][c+3].getX()-w;
-					xV = 0;
-					// x -= 1;
+					xV = -1;
+					x -= w;
 					return true;
 				}
 			}
@@ -237,8 +237,8 @@ public class Player {
 					if (grid[r + i][c - 1].getX() <= (x - 30) && grid[r + i][c - 1].getY() <= (y + h)
 							&& grid[r + i][c - 1].getY() >= (y)) {
 						// x=grid[r+i][c+3].getX()-w;
-						xV = 0;
-						x += 1;
+						xV = 1;
+						x += w;
 						return true;
 					}
 				}
@@ -257,7 +257,16 @@ public class Player {
 		return false;
 	}
 	public boolean checkAttack(Enemy e) {
-		Rectangle a = new Rectangle(x+w, y+5, 40, h-15); // USE THIS TO CHANGE ATTACK HITBOX
+		Rectangle a;
+		if(attR) {
+			a = new Rectangle(x+w, y+5, 40, h-15); // USE THIS TO CHANGE ATTACK HITBOX
+		} else if(attL) {
+			a = new Rectangle(x-40, y+5, 40, h-15); // USE THIS TO CHANGE ATTACK HITBOX
+		} else if(attU) {
+			a = new Rectangle(x-5, y-40, w+10, 40); // USE THIS TO CHANGE ATTACK HITBOX
+		} else {
+			a = new Rectangle(x+w, y+5, 40, h-15); // USE THIS TO CHANGE ATTACK HITBOX
+		}
 		Rectangle E = new Rectangle(e.getX(), e.getY(), e.getHeight(), e.getWidth());
 		if (a.intersects(E)) {
 			return true;
@@ -289,7 +298,9 @@ public class Player {
 		g.setColor(Color.green);
 		g.fillRect(x, y, w, h); // player hitbox (visual)
 		g.setColor(Color.yellow);
-		g.fillRect(x+w, y+5, 40, h-15); //attacking hitbox (visual)
+		g.fillRect(x-40, y+5, 40, h-15); //attacking hitbox (visual)
+		g.fillRect(x+w, y+5, 40, h-15);
+		g.fillRect(x-5, y-40, w+10, 40);
 		Graphics2D g2 = (Graphics2D) g;
 		g2.drawImage(img, tx, null);
 
@@ -421,14 +432,6 @@ public class Player {
 
 	public void setDeathTime(int deathTime) {
 		this.deathTime = deathTime;
-	}
-
-	public int getStamina() {
-		return stamina;
-	}
-
-	public void setStamina(int stamina) {
-		this.stamina = stamina;
 	}
 
 	public boolean isClimbing() {

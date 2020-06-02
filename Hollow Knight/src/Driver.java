@@ -83,15 +83,26 @@ public class Driver extends JPanel implements ActionListener, KeyListener {
 		}
 
 		if (e.getKeyCode() == 37) {
-				cRoom.getPlayer().xV=-5;
+			cRoom.getPlayer().attL = true;
+			cRoom.getPlayer().attR = false;
+			cRoom.getPlayer().attU = false;
+
+			cRoom.getPlayer().xA=-0.25;
 		}
-		if (e.getKeyCode() == 83) {
+		if (e.getKeyCode() == 38) {
+			cRoom.getPlayer().attU = true;
+			cRoom.getPlayer().attR = false;
+			cRoom.getPlayer().attL = false;
 		}
 		if (e.getKeyCode() == 88) {
 			cRoom.getPlayer().isAttacking = true;
 		}
 		if (e.getKeyCode() == 39) {
-				cRoom.getPlayer().xV=5;
+			cRoom.getPlayer().attR = true;
+			cRoom.getPlayer().attU = false;
+			cRoom.getPlayer().attL = false;
+			
+			cRoom.getPlayer().xA=0.25;
 		}
 	}
 	
@@ -107,7 +118,8 @@ public class Driver extends JPanel implements ActionListener, KeyListener {
 			cRoom.getPlayer().xV=0;
 			cRoom.getPlayer().xA=0;
 		}
-		if (e.getKeyCode() == 83) {
+		if (e.getKeyCode() == 38) {
+			cRoom.getPlayer().attU = false;
 		}
 
 		if (e.getKeyCode() == 39) {
