@@ -5,45 +5,62 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.geom.AffineTransform;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 
-public class Enemy {
+public class Boss {
 	private int width; 
 	private int height;
 	private int x;
+	private long time;
 	private int y;
 	private boolean alive;
+	private int health;
 	private AffineTransform tx = AffineTransform.getTranslateInstance(x, y);
 	int startTime;
-	EProjectile projectiles;
-	public Enemy(int xI, int yI, String fileName, Player p) {
+	ArrayList<EProjectile> projectiles;
+	public Boss(int xI, int yI, String fileName, Player p) {
 		// assignment statements for attributes
 		alive = true;
 		x = xI;
 		y = yI;
-		width = 50;
-		height = 50;
-		tx.setToTranslation(x, y);
-		loadProjectiles(p);
+		width = 180;
+		health = 500; //edit health
+		height = 180;
+		tx.setToTranslation(x-50, y-20);
+		projectiles = new ArrayList<EProjectile>();
 		img = getImage(fileName);
 	}
+	public int getHealth() {
+		return health;
+	}
+	public void setHealth(int health) {
+		this.health = health;
+	}
 	public void loadProjectiles(Player p) {
-		projectiles = new EProjectile("projectile.png", x, y);
-		projectiles.active = true;
-		projectiles.aim(p, false);
+		time = System.currentTimeMillis();
+		projectiles.add(new EProjectile("projectile.png", x+90, y+90));
 	}
 	private Image img; 
 	public void paint(Graphics g, Player p) {
+		//System.out.println(health + " health");
+		if(projectiles.size()<1 &&(System.currentTimeMillis() - time) >= 2000) { //add more projectiles by increasing size
+			//System.out.println(time);
+			loadProjectiles(p);
+			//System.out.println(System.currentTimeMillis() + " hi");
+		}
 		if(alive) {
 			Graphics2D g2 = (Graphics2D) g;
-			//g.drawRect(x,y,width,height);
+			//g.fillRect(x,y,width,height);
 			g2.drawImage(img, tx, null);
 		}
-		if(projectiles.active) {
-			projectiles.paint(g);
-		} else if(alive) {
-			reload(p);
+		for(int i = 0; i<projectiles.size(); i++) {
+			if(projectiles.get(i).active) {
+				projectiles.get(i).paint(g); 
+			} else if(alive) {
+				reload(p, i);
+			}
 		}
 	}
 	public boolean isAlive() {
@@ -64,19 +81,24 @@ public class Enemy {
 	}
 	
 	public void checkPlayer(Player p) {
-		if(projectiles.active) {
-			projectiles.runCollisionE(p);
+		for(int i = 0; i<projectiles.size(); i++) {
+			if(projectiles.get(i).active) {
+				projectiles.get(i).runCollisionE(p);
+			}
 		}
+		
 	}
 	public void checkPlatforms(Platform[][] grid) {
-		if(projectiles.active) {
-			projectiles.collidedPlatform(grid);
+		for(int i = 0; i<projectiles.size(); i++) {
+			if(projectiles.get(i).active) {
+				projectiles.get(i).collidedPlatform(grid);
+			}
 		}
 	}
-	public void reload(Player p) {
-		projectiles.setX(x);
-		projectiles.setY(y);
-		projectiles.aim(p, false);
+	public void reload(Player p, int i) {
+		projectiles.get(i).setX(x+90);
+		projectiles.get(i).setY(y+90);
+		projectiles.get(i).aim(p, true);
 	}
 	public int getWidth() {
 		return width;

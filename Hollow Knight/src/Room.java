@@ -20,8 +20,13 @@ public class Room {
 	int iy;
 	Player p;
 	NPC Hornet;
+	Background background;
 	Enemy aspid;
+	Slash up;
+	Slash right;
+	Slash left;
 	Physics phy;
+	Boss aspidBoss;
 
 	public Room(String file, int wi, int hi, int ix, int iy) {
 		roomfile = file;
@@ -54,11 +59,15 @@ public class Room {
 					hs = Double.parseDouble(tokens[5]);
 					vs = Double.parseDouble(tokens[6]);
 
-					p = new Player(px, py, ix,iy, 30, 50, "knight.png");
-					Hornet = new NPC("hornet.png");
-					aspid = new Enemy(500, 400, "aspid.png", p); // x, y, image are parameters
-					
+					p = new Player(px, py, ix,iy, 30, 50);
+					Hornet = new NPC("hornet_sitting.gif");
+					aspid = new Enemy(500, 400, "aspid_2.gif", p); // x, y, image are parameters
+					aspidBoss = new Boss(500, 500, "aspid_boss.gif", p); // x, y, image are parameters
+					left = new Slash("slash_left.gif", 1);
+					right = new Slash("slash_right.gif", 2);
+					up = new Slash("slash_up.gif", 3);
 					phy = new Physics(gravity, hs, vs);
+					background = new Background("background.jpg");
 					grid = new Platform[a][b];
 					
 					continue;
@@ -74,7 +83,17 @@ public class Room {
 					} else if (tokens[i].equals("2")) {
 						grid[line - 2][i] = new Obstacles((line - 2), i, w / b, h / a, i * w / b, (line - 2) * h / a,true,
 								Integer.parseInt(tokens[i]));
-					}else {
+					} else if(tokens[i].equals("3")) {
+						grid[line - 2][i] = new Obstacles((line - 2), i, w / b, h / a, i * w / b, (line - 2) * h / a,true,
+								Integer.parseInt(tokens[i]));
+					} else if(tokens[i].equals("4")) {
+						grid[line - 2][i] = new Obstacles((line - 2), i, w / b, h / a, i * w / b, (line - 2) * h / a,true,
+								Integer.parseInt(tokens[i]));
+					}  else if(tokens[i].equals("5")) {
+						grid[line - 2][i] = new Obstacles((line - 2), i, w / b, h / a, i * w / b, (line - 2) * h / a,true,
+								Integer.parseInt(tokens[i]));
+					}
+					else {
 						grid[line - 2][i] = new Portal((line - 2), i, w / b, h / a, i * w / b, (line - 2) * h / a, tokens[i]);
 					}
 
@@ -90,13 +109,54 @@ public class Room {
 		p.updateKinematics(phy,grid);
 		p.move(grid);
 		p.deathCheck();
-		if(p.checkAttack(aspid) && p.isAttacking) {
-			aspid.alive = false; //aspid not painting if alive is false
+		if(p.checkAttack(aspid) && p.isAttacking && aspid.isAlive()) {
+			aspid.setAlive(false);
+		}
+		if(p.checkAttackBoss(aspidBoss) && p.isAttacking && aspidBoss.isAlive()) {
+			aspidBoss.setHealth(aspidBoss.getHealth()-1);
+			if(aspidBoss.getHealth() <=0) {
+				aspidBoss.setAlive(false);
+			}
+		}
+		if (p.isAttacking) {
+			if (p.attL) {
+				left.position(p);
+				right.setAttack(false);
+				up.setAttack(false);
+			}
+			else if (p.attU) {
+				up.position(p);
+				right.setAttack(false);
+				left.setAttack(false);
+			}
+			else {
+				right.position(p);
+				left.setAttack(false);
+				up.setAttack(false);
+			}
+		} else {
+			left.setAttack(false);
+			right.setAttack(false);
+			up.setAttack(false);
 		}
 		aspid.checkPlayer(p);
 		aspid.checkPlatforms(grid);
+		aspidBoss.checkPlayer(p);
+		aspidBoss.checkPlatforms(grid);
+		if(p.collidedEnemy(aspid) && aspid.isAlive()) {
+			p.isDying = true;
+			p.deathTime = (int) System.currentTimeMillis();
+		}
+		if(p.collidedBoss(aspidBoss) && aspidBoss.isAlive()) {
+			p.isDying = true;
+			p.deathTime = (int) System.currentTimeMillis();
+		}
+		if(!aspidBoss.isAlive()) {
+			//add ur removing stuff here IAN
+		}
 	}
 	public void paint(Graphics g) {
+		background.paint(g);
 		for (int i = 0; i < grid.length; i++) {
 			for (int j = 0; j < grid[0].length; j++) {
 //				System.out.println(j);
@@ -105,14 +165,18 @@ public class Room {
 				}
 			}
 		}
-		p.paint(g);
 		Hornet.paint(g);
+		p.paint(g);
+		left.paint(g);
+		right.paint(g);
+		up.paint(g);
 		aspid.paint(g, p);
+		aspidBoss.paint(g, p);
 		if(p.collidedNPC(Hornet, g)) { // if hornet and player intersect
 			Font myFont = new Font("Serif", Font.BOLD, 25);
 			g.setFont(myFont);
-			g.setColor(Color.black);
-			g.drawString("arrow keys to move, z to jump (can double jump)", 400, 100);
+			g.setColor(Color.white);
+			g.drawString("arrow keys to move, z to jump (can double jump), x to attack", 400, 100);
 		}
 		g.setColor(Color.ORANGE);
 		int a =1;

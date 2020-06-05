@@ -35,7 +35,7 @@ public class Player {
 	Rectangle hB;
 	private Image img; // image of the frog
 
-	public Player(int x, int y, int ix, int iy, int w, int h, String fileName) {
+	public Player(int x, int y, int ix, int iy, int w, int h) {
 		super();
 		this.x = x;
 		this.y = y;
@@ -54,7 +54,6 @@ public class Player {
 		sH = 900;
 		sW = 1300;
 		hB = new Rectangle(x, y, h, w);
-		img = getImage(fileName);
 		jump = true;
 		jump2 = true;
 		deathTime = 0;
@@ -63,7 +62,7 @@ public class Player {
 	public void setCords() {
 		r = 36 * y / (sH);
 		c = x / (sW / 52);
-		tx.setToTranslation(x, y);
+		tx.setToTranslation(x-5, y-5);
 	}
 
 	public void move(Platform[][] grid) {
@@ -125,7 +124,7 @@ public class Player {
 				if (grid[r + i - 1][c].getY() >= (y + h)) {
 //				y=grid[r+i][c].getY()-h;
 //				tx.setToTranslation(x, y);
-					if (grid[r + i - 1][c].getType() == 2) {
+					if (grid[r + i - 1][c].getType() == 2 || grid[r + i - 1][c].getType() == 3 || grid[r + i - 1][c].getType() == 4 || grid[r + i - 1][c].getType() == 5) {
 						isDying = true;
 						deathTime = (int) System.currentTimeMillis();
 					}
@@ -139,9 +138,8 @@ public class Player {
 				if (grid[r + i - 1][c + 1].getY() >= (y + h)) {
 //				y=grid[r+i][c+1].getY()-h;
 //				tx.setToTranslation(x, y);
-					if (grid[r + i - 1][c].getType() == 2) {
+					if (grid[r + i - 1][c].getType() == 2 || grid[r + i - 1][c].getType() == 3 || grid[r + i - 1][c].getType() == 4 || grid[r + i - 1][c].getType() == 5) {
 						isDying = true;
-						System.out.println("yer");
 					}
 					g2 = true;
 					continue;
@@ -165,7 +163,7 @@ public class Player {
 			if (grid[r][c].getY() <= (y + h)) {
 //				y=grid[r+i][c].getY()-h;
 //				tx.setToTranslation(x, y);
-				if (grid[r][c].getType() == 2) {
+				if (grid[r][c].getType() == 2 || grid[r][c].getType() == 3 || grid[r][c].getType() == 4 || grid[r][c].getType() == 5) {
 					isDying = true;
 					deathTime = (int) System.currentTimeMillis();
 				}
@@ -176,9 +174,8 @@ public class Player {
 			if (grid[r][c + 1].getY() <= (y + h)) {
 //				y=grid[r+i][c+1].getY()-h;
 //				tx.setToTranslation(x, y);
-				if (grid[r][c + 1].getType() == 2) {
+				if (grid[r][c].getType() == 2 || grid[r][c].getType() == 3 || grid[r][c].getType() == 4 || grid[r][c].getType() == 52) {
 					isDying = true;
-					System.out.println("yer");
 				}
 				g2 = true;
 			}
@@ -277,7 +274,7 @@ public class Player {
 			 */
 			if (c > 0) {
 				if (grid[r + i][c - 1].isSolid()) {
-					if (grid[r + i][c - 1].getX() <= (x - 30) && grid[r + i][c - 1].getY() <= (y + h)
+					if (grid[r + i][c - 1].getX() <= (x) && grid[r + i][c - 1].getY() <= (y + h)
 							&& grid[r + i][c - 1].getY() >= (y)) {
 						// x=grid[r+i][c+3].getX()-w;
 						if (xV < 0) {
@@ -302,8 +299,40 @@ public class Player {
 		}
 		return false;
 	}
-
+	public boolean collidedEnemy(Enemy e) {
+		Rectangle p = new Rectangle(x, y, w, h);
+		Rectangle E = new Rectangle(e.getX(), e.getY(), e.getHeight(), e.getWidth());
+		if (p.intersects(E)) {
+			return true;
+		}
+		return false;
+	}
+	public boolean collidedBoss(Boss e) {
+		Rectangle p = new Rectangle(x, y, w, h);
+		Rectangle E = new Rectangle(e.getX(), e.getY(), e.getHeight(), e.getWidth());
+		if (p.intersects(E)) {
+			return true;
+		}
+		return false;
+	}
 	public boolean checkAttack(Enemy e) {
+		Rectangle a;
+		if (attR) {
+			a = new Rectangle(x + w, y + 5, 40, h - 15); // USE THIS TO CHANGE ATTACK HITBOX
+		} else if (attL) {
+			a = new Rectangle(x - 40, y + 5, 40, h - 15); // USE THIS TO CHANGE ATTACK HITBOX
+		} else if (attU) {
+			a = new Rectangle(x - 5, y - 40, w + 10, 40); // USE THIS TO CHANGE ATTACK HITBOX
+		} else {
+			a = new Rectangle(x + w, y + 5, 40, h - 15); // USE THIS TO CHANGE ATTACK HITBOX
+		}
+		Rectangle E = new Rectangle(e.getX(), e.getY(), e.getHeight(), e.getWidth());
+		if (a.intersects(E)) {
+			return true;
+		}
+		return false;
+	}
+	public boolean checkAttackBoss(Boss e) {
 		Rectangle a;
 		if (attR) {
 			a = new Rectangle(x + w, y + 5, 40, h - 15); // USE THIS TO CHANGE ATTACK HITBOX
@@ -343,11 +372,16 @@ public class Player {
 
 	public void paint(Graphics g) {
 		g.setColor(Color.green);
-		g.fillRect(x, y, w, h); // player hitbox (visual)
+		//g.fillRect(x, y, w, h); // player hitbox (visual)
 		g.setColor(Color.yellow);
-		g.fillRect(x - 40, y + 5, 40, h - 15); // attacking hitbox (visual)
-		g.fillRect(x + w, y + 5, 40, h - 15);
-		g.fillRect(x - 5, y - 40, w + 10, 40);
+		//g.fillRect(x - 40, y + 5, 40, h - 15); // attacking hitbox (visual)
+		//g.fillRect(x + w, y + 5, 40, h - 15);
+		//g.fillRect(x - 5, y - 40, w + 10, 40);
+		if(attL) {
+			img = getImage("knight_spriteL.gif");
+		} else {
+			img = getImage("knight_sprite.gif");
+		}
 		Graphics2D g2 = (Graphics2D) g;
 		g2.drawImage(img, tx, null);
 
