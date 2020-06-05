@@ -141,6 +141,7 @@ public class EProjectile {
 	public void runCollisionE(Player p) {
 		if (checkCollisionE(p)) {
 			p.isDying = true;
+			p.deathTime = System.currentTimeMillis();
 			// p.setLives(p.getLives()-1);
 			startTime = System.currentTimeMillis();
 			active = false;

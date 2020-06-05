@@ -145,11 +145,11 @@ public class Room {
 		aspidBoss.checkPlatforms(grid);
 		if(p.collidedEnemy(aspid) && aspid.isAlive()) {
 			p.isDying = true;
-			p.deathTime = (int) System.currentTimeMillis();
+			p.deathTime = System.currentTimeMillis();
 		}
 		if(p.collidedBoss(aspidBoss) && aspidBoss.isAlive()) {
 			p.isDying = true;
-			p.deathTime = (int) System.currentTimeMillis();
+			p.deathTime = System.currentTimeMillis();
 		}
 		if(!aspidBoss.isAlive()) {
 			//add ur removing stuff here IAN

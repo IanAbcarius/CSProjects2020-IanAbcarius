@@ -27,7 +27,7 @@ public class Player {
 	boolean jump;
 	boolean jump2;
 	boolean attR, attL, attU, attD;
-	int deathTime;
+	long deathTime;
 	boolean isClimbing;
 	boolean isDying;
 	boolean isAttacking;
@@ -62,7 +62,7 @@ public class Player {
 	public void setCords() {
 		r = 36 * y / (sH);
 		c = x / (sW / 52);
-		tx.setToTranslation(x-5, y-5);
+		tx.setToTranslation(x-20, y-5);
 	}
 
 	public void move(Platform[][] grid) {
@@ -126,7 +126,7 @@ public class Player {
 //				tx.setToTranslation(x, y);
 					if (grid[r + i - 1][c].getType() == 2 || grid[r + i - 1][c].getType() == 3 || grid[r + i - 1][c].getType() == 4 || grid[r + i - 1][c].getType() == 5) {
 						isDying = true;
-						deathTime = (int) System.currentTimeMillis();
+						deathTime = System.currentTimeMillis();
 					}
 					g1 = true;
 					continue;
@@ -140,6 +140,7 @@ public class Player {
 //				tx.setToTranslation(x, y);
 					if (grid[r + i - 1][c].getType() == 2 || grid[r + i - 1][c].getType() == 3 || grid[r + i - 1][c].getType() == 4 || grid[r + i - 1][c].getType() == 5) {
 						isDying = true;
+						deathTime = System.currentTimeMillis();
 					}
 					g2 = true;
 					continue;
@@ -165,7 +166,7 @@ public class Player {
 //				tx.setToTranslation(x, y);
 				if (grid[r][c].getType() == 2 || grid[r][c].getType() == 3 || grid[r][c].getType() == 4 || grid[r][c].getType() == 5) {
 					isDying = true;
-					deathTime = (int) System.currentTimeMillis();
+					deathTime = System.currentTimeMillis();
 				}
 				g1 = true;
 			}
@@ -176,6 +177,7 @@ public class Player {
 //				tx.setToTranslation(x, y);
 				if (grid[r][c].getType() == 2 || grid[r][c].getType() == 3 || grid[r][c].getType() == 4 || grid[r][c].getType() == 52) {
 					isDying = true;
+					deathTime = System.currentTimeMillis();
 				}
 				g2 = true;
 			}
@@ -362,9 +364,11 @@ public class Player {
 	}
 
 	public void deathCheck() {
-		if (isDying && System.currentTimeMillis() - deathTime > 2000) {
+		if(isDying) {
 			x = ix;
 			y = iy;
+		}
+		if (isDying && System.currentTimeMillis() - deathTime > 2000) {
 			isDying = false;
 			setCords();
 		}
@@ -382,8 +386,10 @@ public class Player {
 		} else {
 			img = getImage("knight_sprite.gif");
 		}
-		Graphics2D g2 = (Graphics2D) g;
-		g2.drawImage(img, tx, null);
+		if(!isDying) {
+			Graphics2D g2 = (Graphics2D) g;
+			g2.drawImage(img, tx, null);
+		}
 
 	}
 
@@ -507,7 +513,7 @@ public class Player {
 		this.jump2 = jump2;
 	}
 
-	public int getDeathTime() {
+	public long getDeathTime() {
 		return deathTime;
 	}
 
