@@ -20,7 +20,9 @@ public class Platform {
 		this.isSolid = solid;
 	}
 
-	
+	public String className() {
+		return "Platform";
+	}
 
 	public int getR() {
 		return r;

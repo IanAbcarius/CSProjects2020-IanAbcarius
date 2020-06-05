@@ -52,9 +52,9 @@ public class Map {
              
              
          }
-		public Room getRoom(int w, int h){
+		public Room getRoom(int w, int h, int x, int y){
 			System.out.println(layout[cR][cC]);
-			return (new Room(layout[cR][cC], w, h));
+			return (new Room(layout[cR][cC], w, h,x ,y));
 		}
 		public String[][] getLayout() {
 			return layout;

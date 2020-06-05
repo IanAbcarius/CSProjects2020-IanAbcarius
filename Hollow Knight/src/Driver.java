@@ -22,7 +22,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener {
 	/* Attributes a.k.a. Instance Variables */
 	int w = 1300, h = 900;
 	Map map = new Map("lv1.in");
-	Room cRoom = map.getRoom(w, h);
+	Room cRoom = map.getRoom(w, h, 30 , 600);
 	public void paint(Graphics g) {
 		super.paintComponent(g);
 		
@@ -32,6 +32,11 @@ public class Driver extends JPanel implements ActionListener, KeyListener {
 
 	public void update() {
 		cRoom.updateRoom();
+		
+		//portal stuff
+//		if(cRoom.p.inPortal(cRoom.grid)==1);
+		
+		
 	}// end of update method - put code above for any updates on variable
 
 	// ==================code above ===========================
@@ -71,15 +76,8 @@ public class Driver extends JPanel implements ActionListener, KeyListener {
 	@Override
 	 public void keyPressed(KeyEvent e) {
 		if (e.getKeyCode() == 90) {
-			if(!cRoom.getPlayer().jump) {
-				cRoom.getPlayer().yV=-7;
-				cRoom.getPlayer().y -= 8;
-				cRoom.getPlayer().jump = true;
-			} else if(!cRoom.getPlayer().jump2) {
-				cRoom.getPlayer().yV=-5;
-				cRoom.getPlayer().y -= 2;
-				cRoom.getPlayer().jump2 = true;
-			}
+		cRoom.getPlayer().jump(cRoom.grid);
+			
 		}
 
 		if (e.getKeyCode() == 37) {

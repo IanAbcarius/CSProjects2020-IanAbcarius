@@ -88,9 +88,9 @@ public class Player {
 			jump = false;
 			jump2 = false;
 		}
-		if(underPlatform(grid)) {
+		if (underPlatform(grid)) {
 			yV = 0;
-			y+=1;
+			y += 1;
 		}
 		if (xV > 5) {
 			xV = 5;
@@ -116,6 +116,7 @@ public class Player {
 			xV = xV * p.getHSlowFactor();
 		}
 	}
+
 	public boolean onPlatform(Platform[][] grid) {
 		boolean g1 = false;
 		boolean g2 = false;
@@ -175,7 +176,7 @@ public class Player {
 			if (grid[r][c + 1].getY() <= (y + h)) {
 //				y=grid[r+i][c+1].getY()-h;
 //				tx.setToTranslation(x, y);
-				if (grid[r][c+1].getType() == 2) {
+				if (grid[r][c + 1].getType() == 2) {
 					isDying = true;
 					System.out.println("yer");
 				}
@@ -199,6 +200,45 @@ public class Player {
 		}
 
 	}
+	
+	public int inPortal(Platform[][] grid) {
+		if (grid[r + 1][c].className().equals("Portal")) {
+			
+			return 1;
+		}
+		if( grid[r + 1][c + 1].className().equals("Portal")) {
+			return 2;
+		}
+		return 0;
+	}
+
+	public void jump(Platform[][] grid) {
+
+		if (collidedWall(grid)) {
+			xV = -3.5;
+			yV = -7;
+			y -= 8;
+			jump = true;
+			return;
+		}
+		if (collidedWall2(grid)) {
+			xV = 3.5;
+			yV = -7;
+			y -= 8;
+			jump = true;
+			return;
+		}
+
+		if (!jump) {
+			yV = -7;
+			y -= 8;
+			jump = true;
+		} else if (!jump2) {
+			yV = -5;
+			y -= 2;
+			jump2 = true;
+		}
+	}
 
 	public boolean collidedWall(Platform[][] grid) {
 		Rectangle p = new Rectangle(x + w + 30, y + 10, 20, h - 10);
@@ -214,8 +254,11 @@ public class Player {
 				if (grid[r + i][c + 2].getX() >= (x + w) && grid[r + i][c + 2].getY() <= (y + h)
 						&& grid[r + i][c + 2].getY() >= (y)) {
 					// x=grid[r+i][c+3].getX()-w;
-					xV = -1;
-					x -= w;
+					if (xV > 0) {
+						xV = 0;
+					}
+					jump = false;
+					jump2 = false;
 					return true;
 				}
 			}
@@ -237,8 +280,11 @@ public class Player {
 					if (grid[r + i][c - 1].getX() <= (x - 30) && grid[r + i][c - 1].getY() <= (y + h)
 							&& grid[r + i][c - 1].getY() >= (y)) {
 						// x=grid[r+i][c+3].getX()-w;
-						xV = 1;
-						x += w;
+						if (xV < 0) {
+							xV = 0;
+						}
+						jump = false;
+						jump2 = false;
 						return true;
 					}
 				}
@@ -256,16 +302,17 @@ public class Player {
 		}
 		return false;
 	}
+
 	public boolean checkAttack(Enemy e) {
 		Rectangle a;
-		if(attR) {
-			a = new Rectangle(x+w, y+5, 40, h-15); // USE THIS TO CHANGE ATTACK HITBOX
-		} else if(attL) {
-			a = new Rectangle(x-40, y+5, 40, h-15); // USE THIS TO CHANGE ATTACK HITBOX
-		} else if(attU) {
-			a = new Rectangle(x-5, y-40, w+10, 40); // USE THIS TO CHANGE ATTACK HITBOX
+		if (attR) {
+			a = new Rectangle(x + w, y + 5, 40, h - 15); // USE THIS TO CHANGE ATTACK HITBOX
+		} else if (attL) {
+			a = new Rectangle(x - 40, y + 5, 40, h - 15); // USE THIS TO CHANGE ATTACK HITBOX
+		} else if (attU) {
+			a = new Rectangle(x - 5, y - 40, w + 10, 40); // USE THIS TO CHANGE ATTACK HITBOX
 		} else {
-			a = new Rectangle(x+w, y+5, 40, h-15); // USE THIS TO CHANGE ATTACK HITBOX
+			a = new Rectangle(x + w, y + 5, 40, h - 15); // USE THIS TO CHANGE ATTACK HITBOX
 		}
 		Rectangle E = new Rectangle(e.getX(), e.getY(), e.getHeight(), e.getWidth());
 		if (a.intersects(E)) {
@@ -298,9 +345,9 @@ public class Player {
 		g.setColor(Color.green);
 		g.fillRect(x, y, w, h); // player hitbox (visual)
 		g.setColor(Color.yellow);
-		g.fillRect(x-40, y+5, 40, h-15); //attacking hitbox (visual)
-		g.fillRect(x+w, y+5, 40, h-15);
-		g.fillRect(x-5, y-40, w+10, 40);
+		g.fillRect(x - 40, y + 5, 40, h - 15); // attacking hitbox (visual)
+		g.fillRect(x + w, y + 5, 40, h - 15);
+		g.fillRect(x - 5, y - 40, w + 10, 40);
 		Graphics2D g2 = (Graphics2D) g;
 		g2.drawImage(img, tx, null);
 

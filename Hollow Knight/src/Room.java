@@ -23,7 +23,7 @@ public class Room {
 	Enemy aspid;
 	Physics phy;
 
-	public Room(String file, int wi, int hi) {
+	public Room(String file, int wi, int hi, int ix, int iy) {
 		roomfile = file;
 
 		grid = new Platform[0][0];
@@ -33,8 +33,8 @@ public class Room {
 		int b = 0;
 		int px = 0;
 		int py = 0;
-		int ix;
-		int iy;
+		this.ix = ix;
+		this.iy = iy;
 		double gravity = 0;
 		double hs = 0;
 		double vs = 0;
@@ -48,8 +48,6 @@ public class Room {
 					String[] tokens = x.split(" ");
 					a = Integer.parseInt(tokens[0]);
 					b = Integer.parseInt(tokens[1]);
-					ix = Integer.parseInt(tokens[2]);
-					iy = Integer.parseInt(tokens[3]);
 					px = ix;
 					py = iy;
 					gravity = Double.parseDouble(tokens[4]);
@@ -73,9 +71,11 @@ public class Room {
 						grid[line - 2][i] = new Platform((line - 2), i, w / b, h / a, i * w / b, (line - 2) * h / a,true);
 					} else if (tokens[i].equals("0")) {
 						grid[line - 2][i] = new Platform((line - 2), i, w / b, h / a, i * w / b, (line - 2) * h / a,false);
-					} else {
+					} else if (tokens[i].equals("2")) {
 						grid[line - 2][i] = new Obstacles((line - 2), i, w / b, h / a, i * w / b, (line - 2) * h / a,true,
 								Integer.parseInt(tokens[i]));
+					}else {
+						grid[line - 2][i] = new Portal((line - 2), i, w / b, h / a, i * w / b, (line - 2) * h / a, tokens[i]);
 					}
 
 				}
@@ -120,6 +120,13 @@ public class Room {
 		g.drawRect(grid[a][b].getX(),grid[a][b].getY(),grid[a][b].getW(),grid[a][b].getH());
 	}
 
+	public boolean portalCheck() {
+		
+		
+		
+		return false;
+	}
+	
 	public Platform getPlatform(int r, int c) {
 		return grid[r][c];
 	}
