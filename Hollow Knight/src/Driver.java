@@ -38,7 +38,6 @@ public class Driver extends JPanel implements ActionListener, KeyListener {
 			map.setcR(cRoom.grid[cRoom.p.getR()][cRoom.p.getC()].getmR());
 			map.setcC(cRoom.grid[cRoom.p.getR()][cRoom.p.getC()].getmC());
 			cRoom = map.getRoom(w, h, cRoom.grid[cRoom.p.getR()][cRoom.p.getC()].getnX(), cRoom.grid[cRoom.p.getR()][cRoom.p.getC()].getnY());
-			
 		}	
 //		}else if(cRoom.p.inPortal(cRoom.grid)==2) {
 //			if(cRoom.p.inPortal(cRoom.grid)==1){
@@ -108,7 +107,9 @@ public class Driver extends JPanel implements ActionListener, KeyListener {
 			cRoom.getPlayer().attL = false;
 		}
 		if (e.getKeyCode() == 88) {
-			cRoom.getPlayer().isAttacking = true;
+			if(!cRoom.getPlayer().isDying) {
+				cRoom.getPlayer().isAttacking = true;
+			}
 		}
 		if (e.getKeyCode() == 39) {
 			cRoom.getPlayer().attR = true;

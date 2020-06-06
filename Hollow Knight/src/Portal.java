@@ -75,8 +75,8 @@ public class Portal extends Platform {
 		else if(num == 107) {
 			mR = 3;
 			mC = 2;
-			nX = 125;
-			nY = 575;
+			nX = 600;
+			nY = 100;
 		}
 		else if(num == 108) {
 			mR = 1;

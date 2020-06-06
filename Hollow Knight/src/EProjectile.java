@@ -56,21 +56,23 @@ public class EProjectile {
 	}
 
 	public void aim(Player p, boolean boss) {
-		if (System.currentTimeMillis() - startTime >= 1000 && !boss) {
-			active = true;
-			double deltaX = p.x - x;
-			double deltaY = p.y - y;
-			double direction = Math.atan2(deltaY, deltaX);
-			vx = (10 * Math.cos(direction));
-			vy = (10 * Math.sin(direction));
-		} else if(System.currentTimeMillis() - startTime >= 1000) {
-			active = true;
-			double deltaX = p.x - x;
-			double deltaY = p.y - y;
-			double direction = Math.atan2(deltaY, deltaX);
-			double rand = Math.random()*Math.PI/3-Math.PI/6;
-			vx = (10 * Math.cos(direction+rand));
-			vy = (10 * Math.sin(direction+rand));
+		if(!p.isDying()) {
+			if (System.currentTimeMillis() - startTime >= 1000 && !boss) {
+				active = true;
+				double deltaX = p.x - x;
+				double deltaY = p.y - y;
+				double direction = Math.atan2(deltaY, deltaX);
+				vx = (10 * Math.cos(direction));
+				vy = (10 * Math.sin(direction));
+			} else if(System.currentTimeMillis() - startTime >= 1000) {
+				active = true;
+				double deltaX = p.x - x;
+				double deltaY = p.y - y;
+				double direction = Math.atan2(deltaY, deltaX);
+				double rand = Math.random()*Math.PI/3-Math.PI/6;
+				vx = (10 * Math.cos(direction+rand));
+				vy = (10 * Math.sin(direction+rand));
+			}
 		}
 	}
 
@@ -140,11 +142,16 @@ public class EProjectile {
 
 	public void runCollisionE(Player p) {
 		if (checkCollisionE(p)) {
-			p.isDying = true;
-			p.deathTime = System.currentTimeMillis();
-			// p.setLives(p.getLives()-1);
-			startTime = System.currentTimeMillis();
+			p.lives -= 1;
 			active = false;
+			startTime = System.currentTimeMillis();	
+			if(p.lives <= 0) {
+				p.isDying = true;
+				p.isAttacking = false;
+				p.deathTime = System.currentTimeMillis();
+				// p.setLives(p.getLives()-1);
+			}
+			
 		}
 	}
 }

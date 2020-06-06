@@ -22,12 +22,12 @@ public class Boss {
 	ArrayList<EProjectile> projectiles;
 	public Boss(int xI, int yI, String fileName, Player p) {
 		// assignment statements for attributes
-		alive = false;
+		alive = true;
 		x = xI;
 		y = yI;
-		width = 180;
+		width = 160;
 		health = 500; //edit health
-		height = 180;
+		height = 160;
 		tx.setToTranslation(x-50, y-20);
 		projectiles = new ArrayList<EProjectile>();
 		img = getImage(fileName);
@@ -45,7 +45,7 @@ public class Boss {
 	private Image img; 
 	public void paint(Graphics g, Player p) {
 		//System.out.println(health + " health");
-		if(projectiles.size()<1 &&(System.currentTimeMillis() - time) >= 2000) { //add more projectiles by increasing size
+		if(projectiles.size()<3 &&(System.currentTimeMillis() - time) >= 2000) { //add more projectiles by increasing size
 			//System.out.println(time);
 			loadProjectiles(p);
 			//System.out.println(System.currentTimeMillis() + " hi");

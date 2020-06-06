@@ -19,19 +19,14 @@ public class Enemy {
 	EProjectile projectiles;
 	public Enemy(int xI, int yI, String fileName, Player p) {
 		// assignment statements for attributes
-		alive = false;
+		alive = true;
 		x = xI;
 		y = yI;
 		width = 50;
 		height = 50;
 		tx.setToTranslation(x, y);
-		loadProjectiles(p);
-		img = getImage(fileName);
-	}
-	public void loadProjectiles(Player p) {
 		projectiles = new EProjectile("projectile.png", x, y);
-		projectiles.active = true;
-		projectiles.aim(p, false);
+		img = getImage(fileName);
 	}
 	private Image img; 
 	public void paint(Graphics g, Player p) {
