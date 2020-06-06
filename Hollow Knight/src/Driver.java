@@ -22,7 +22,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener {
 	/* Attributes a.k.a. Instance Variables */
 	int w = 1300, h = 900;
 	Map map = new Map("lv1.in");
-	Room cRoom = map.getRoom(w, h, 30 , 600);
+	Room cRoom = map.getRoom(w, h, 50 , 600);
 	public void paint(Graphics g) {
 		super.paintComponent(g);
 		
@@ -34,7 +34,22 @@ public class Driver extends JPanel implements ActionListener, KeyListener {
 		cRoom.updateRoom();
 		
 		//portal stuff
-//		if(cRoom.p.inPortal(cRoom.grid)==1);
+		if(cRoom.p.inPortal(cRoom.grid)==1){
+			map.setcR(cRoom.grid[cRoom.p.getR()][cRoom.p.getC()].getmR());
+			map.setcC(cRoom.grid[cRoom.p.getR()][cRoom.p.getC()].getmC());
+			cRoom = map.getRoom(w, h, cRoom.grid[cRoom.p.getR()][cRoom.p.getC()].getnX(), cRoom.grid[cRoom.p.getR()][cRoom.p.getC()].getnY());
+			
+		}	
+//		}else if(cRoom.p.inPortal(cRoom.grid)==2) {
+//			if(cRoom.p.inPortal(cRoom.grid)==1){
+//				map.setcR(cRoom.grid[cRoom.p.getR()+1][cRoom.p.getC()].getmR());
+//				map.setcC(cRoom.grid[cRoom.p.getR()+1][cRoom.p.getC()].getmC());
+//				cRoom = map.getRoom(w, h, cRoom.grid[cRoom.p.getR()+1][cRoom.p.getC()].getnX(), cRoom.grid[cRoom.p.getR()][cRoom.p.getC()].getnY());
+//				
+//				}
+//		}
+			
+		
 		
 		
 	}// end of update method - put code above for any updates on variable

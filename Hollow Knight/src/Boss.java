@@ -22,7 +22,7 @@ public class Boss {
 	ArrayList<EProjectile> projectiles;
 	public Boss(int xI, int yI, String fileName, Player p) {
 		// assignment statements for attributes
-		alive = true;
+		alive = false;
 		x = xI;
 		y = yI;
 		width = 180;

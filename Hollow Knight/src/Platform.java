@@ -20,6 +20,21 @@ public class Platform {
 		this.isSolid = solid;
 	}
 
+	public int getmR() {
+		return 0;
+
+	}
+	public int getmC() {
+		return 0;
+
+	}
+	public int getnX() {
+		return 0;
+
+	}
+	public int getnY() {
+		return 0;
+	}
 	public String className() {
 		return "Platform";
 	}

@@ -29,13 +29,13 @@ public class Map {
 	               	 int a =Integer.parseInt(tokens[0]);
 	               	 int b = Integer.parseInt(tokens[0]);
 	               	layout = new String[a][b];
-	               	cR = a-1;
+	               	cR = 4;
 	               	cC = 0;
 	                }
 	                else{
 	               	 String[] tokens = x.split(" ");
 	               	 for(int i = 0; i<tokens.length; i++){
-//	               		 System.out.println(tokens[i]);
+	               		 System.out.println(tokens.length);
 	               		 layout[line-2][i] = tokens[i];
 	               	 }
 	                }
@@ -53,7 +53,7 @@ public class Map {
              
          }
 		public Room getRoom(int w, int h, int x, int y){
-			System.out.println(layout[cR][cC]);
+
 			return (new Room(layout[cR][cC], w, h,x ,y));
 		}
 		public String[][] getLayout() {

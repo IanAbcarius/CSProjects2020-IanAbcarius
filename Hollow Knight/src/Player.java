@@ -62,7 +62,7 @@ public class Player {
 	public void setCords() {
 		r = 36 * y / (sH);
 		c = x / (sW / 52);
-		tx.setToTranslation(x-20, y-5);
+		tx.setToTranslation(x-5, y-5);
 	}
 
 	public void move(Platform[][] grid) {
@@ -91,11 +91,11 @@ public class Player {
 			yV = 0;
 			y += 1;
 		}
-		if (xV > 5) {
-			xV = 5;
+		if (xV > 4) {
+			xV = 4;
 		}
-		if (xV < -5) {
-			xV = -5;
+		if (xV < -4) {
+			xV = -4;
 		}
 		if (yV > 10) {
 			yV = 10;
@@ -191,7 +191,7 @@ public class Player {
 	}
 
 	private void inPlatform(Platform[][] grid) {
-		if (grid[r + 1][c].isSolid || grid[r + 1][c + 1].isSolid) {
+		if (grid[r + 1][c].isSolid || grid[r + 1][c].isSolid) {
 			yV = 0;
 			y -= 26;
 			setCords();
@@ -205,11 +205,10 @@ public class Player {
 			
 			return 1;
 		}
-		if( grid[r + 1][c + 1].className().equals("Portal")) {
-			return 2;
-		}
+		
 		return 0;
 	}
+	
 
 	public void jump(Platform[][] grid) {
 

@@ -19,7 +19,7 @@ public class Enemy {
 	EProjectile projectiles;
 	public Enemy(int xI, int yI, String fileName, Player p) {
 		// assignment statements for attributes
-		alive = true;
+		alive = false;
 		x = xI;
 		y = yI;
 		width = 50;

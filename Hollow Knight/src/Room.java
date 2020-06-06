@@ -105,7 +105,10 @@ public class Room {
 		}
 	}
 	
+	
+	
 	public void updateRoom() {
+		
 		p.updateKinematics(phy,grid);
 		p.move(grid);
 		p.deathCheck();
